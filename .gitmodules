@@ -1,0 +1,3 @@
+[submodule "cmake"]
+	path = cmake/common
+	url = git@github.com:/ram-z/cmake-modules
