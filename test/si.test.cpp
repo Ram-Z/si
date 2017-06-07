@@ -249,26 +249,26 @@ TEST_CASE("Unit conversions", "[unit][unit_cast]")
     }
 }
 
-TEST_CASE("Convenience types for base SI units", "[unit][constructors]")
+TEST_CASE("Convenience types for base SI units", "[unit][detail][constructors]")
 {
     SECTION("Default ratios")
     {
-        CHECK((std::is_same<si::length<int>,      si::unit<int, std::ratio<1>, si::detail::_m<>>>::value));
-        CHECK((std::is_same<si::mass<int>,        si::unit<int, std::ratio<1>, si::detail::_kg<>>>::value));
-        CHECK((std::is_same<si::time<int>,        si::unit<int, std::ratio<1>, si::detail::_s<>>>::value));
-        CHECK((std::is_same<si::current<int>,     si::unit<int, std::ratio<1>, si::detail::_A<>>>::value));
-        CHECK((std::is_same<si::temperature<int>, si::unit<int, std::ratio<1>, si::detail::_K<>>>::value));
-        CHECK((std::is_same<si::mole<int>,        si::unit<int, std::ratio<1>, si::detail::_mol<>>>::value));
-        CHECK((std::is_same<si::candela<int>,     si::unit<int, std::ratio<1>, si::detail::_cd<>>>::value));
+        CHECK((std::is_same<si::length<int>,             si::unit<int, std::ratio<1>, si::detail::_m<>>>::value));
+        CHECK((std::is_same<si::mass<int>,               si::unit<int, std::ratio<1>, si::detail::_kg<>>>::value));
+        CHECK((std::is_same<si::time<int>,               si::unit<int, std::ratio<1>, si::detail::_s<>>>::value));
+        CHECK((std::is_same<si::current<int>,            si::unit<int, std::ratio<1>, si::detail::_A<>>>::value));
+        CHECK((std::is_same<si::temperature<int>,        si::unit<int, std::ratio<1>, si::detail::_K<>>>::value));
+        CHECK((std::is_same<si::amount<int>,             si::unit<int, std::ratio<1>, si::detail::_mol<>>>::value));
+        CHECK((std::is_same<si::luminous_intensity<int>, si::unit<int, std::ratio<1>, si::detail::_cd<>>>::value));
     }
     SECTION("Other ratios")
     {
-        CHECK((std::is_same<si::length<int,      std::milli>, si::unit<int, std::milli, si::detail::_m<>>>::value));
-        CHECK((std::is_same<si::mass<int,        std::deca>,  si::unit<int, std::deca,  si::detail::_kg<>>>::value));
-        CHECK((std::is_same<si::time<int,        std::exa>,   si::unit<int, std::exa,   si::detail::_s<>>>::value));
-        CHECK((std::is_same<si::current<int,     std::atto>,  si::unit<int, std::atto,  si::detail::_A<>>>::value));
-        CHECK((std::is_same<si::temperature<int, std::hecto>, si::unit<int, std::hecto, si::detail::_K<>>>::value));
-        CHECK((std::is_same<si::mole<int,        std::tera>,  si::unit<int, std::tera,  si::detail::_mol<>>>::value));
-        CHECK((std::is_same<si::candela<int,     std::nano>,  si::unit<int, std::nano,  si::detail::_cd<>>>::value));
+        CHECK((std::is_same<si::length<int,             std::milli>, si::unit<int, std::milli, si::detail::_m<>>>::value));
+        CHECK((std::is_same<si::mass<int,               std::deca>,  si::unit<int, std::deca,  si::detail::_kg<>>>::value));
+        CHECK((std::is_same<si::time<int,               std::exa>,   si::unit<int, std::exa,   si::detail::_s<>>>::value));
+        CHECK((std::is_same<si::current<int,            std::atto>,  si::unit<int, std::atto,  si::detail::_A<>>>::value));
+        CHECK((std::is_same<si::temperature<int,        std::hecto>, si::unit<int, std::hecto, si::detail::_K<>>>::value));
+        CHECK((std::is_same<si::amount<int,             std::tera>,  si::unit<int, std::tera,  si::detail::_mol<>>>::value));
+        CHECK((std::is_same<si::luminous_intensity<int, std::nano>,  si::unit<int, std::nano,  si::detail::_cd<>>>::value));
     }
 }

@@ -114,10 +114,10 @@ template<typename _Rep, typename _Ratio = std::ratio<1>>
 using temperature = unit<_Rep, _Ratio, detail::_K<1>>;
 
 template<typename _Rep, typename _Ratio = std::ratio<1>>
-using mole = unit<_Rep, _Ratio, detail::_mol<1>>;
+using amount = unit<_Rep, _Ratio, detail::_mol<1>>;
 
 template<typename _Rep, typename _Ratio = std::ratio<1>>
-using candela = unit<_Rep, _Ratio, detail::_cd<1>>;
+using luminous_intensity = unit<_Rep, _Ratio, detail::_cd<1>>;
 } // namespace si
 
 namespace std
