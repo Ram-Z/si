@@ -8,6 +8,30 @@
 
 namespace si
 {
+template<typename _Rep, typename _Ratio, typename _Base>
+struct unit;
+} // namespace si
+
+namespace std
+{
+template <typename _Rep1, typename _Ratio1, typename _Base1,
+          typename _Rep2, typename _Ratio2, typename _Base2>
+struct common_type<si::unit<_Rep1, _Ratio1, _Base1>,
+                   si::unit<_Rep2, _Ratio2, _Base2>> {
+private:
+    static constexpr auto gcd_num = std::experimental::gcd(_Ratio1::num, _Ratio2::num);
+    static constexpr auto gcd_den = std::experimental::gcd(_Ratio1::den, _Ratio2::den);
+
+    using common_ratio = std::ratio<gcd_num, (_Ratio1::den / gcd_den) * _Ratio2::den>;
+    using common_rep   = std::common_type_t<_Rep1, _Rep2>;
+    using common_base  = typename std::enable_if_t<std::is_same<_Base1, _Base2>::value, _Base1>;
+public:
+    using type = si::unit<common_rep, common_ratio, common_base>;
+};
+} // namespace std
+
+namespace si
+{
 namespace detail
 {
 template <int _m = 0, int _kg = 0, int _s = 0, int _A = 0, int _K = 0, int _mol = 0, int _cd = 0>
@@ -59,9 +83,6 @@ using base_divide = base<Lhs::m - Rhs::m,
                          Lhs::cd - Rhs::cd>;
 } // namespace detail
 
-template<typename _Rep, typename _Ratio, typename _Base>
-struct unit;
-
 template<typename _ToUnit, typename _Rep, typename _Ratio, typename _Base>
 auto unit_cast(const unit<_Rep, _Ratio, _Base> &other)
     -> std::enable_if_t<std::is_same<typename _ToUnit::base, _Base>::value, _ToUnit>
@@ -98,6 +119,95 @@ private:
     rep _count = 0;
 }; // class unit
 
+template <typename _Rep1, typename _Ratio1, typename _Base1,
+          typename _Rep2, typename _Ratio2, typename _Base2,
+          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
+constexpr auto operator==(const unit<_Rep1, _Ratio1, _Base1> &lhs,
+                          const unit<_Rep2, _Ratio2, _Base2> &rhs)
+{
+    using u1 = unit<_Rep1, _Ratio1, _Base1>;
+    using u2 = unit<_Rep2, _Ratio2, _Base2>;
+    using common_unit = typename std::common_type_t<u1, u2>;
+
+    return common_unit{lhs}.count() == common_unit{rhs}.count();
+}
+
+template <typename _Rep1, typename _Ratio1, typename _Base1,
+          typename _Rep2, typename _Ratio2, typename _Base2,
+          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
+constexpr auto operator<(const unit<_Rep1, _Ratio1, _Base1> &lhs,
+                         const unit<_Rep2, _Ratio2, _Base2> &rhs)
+{
+    using u1 = unit<_Rep1, _Ratio1, _Base1>;
+    using u2 = unit<_Rep2, _Ratio2, _Base2>;
+    using common_unit = typename std::common_type_t<u1, u2>;
+
+    return common_unit{lhs}.count() < common_unit{rhs}.count();
+}
+
+template <typename _Rep1, typename _Ratio1, typename _Base1,
+          typename _Rep2, typename _Ratio2, typename _Base2,
+          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
+constexpr auto operator!=(const unit<_Rep1, _Ratio1, _Base1> &lhs,
+                          const unit<_Rep2, _Ratio2, _Base2> &rhs)
+{
+    return !(lhs == rhs);
+}
+
+template <typename _Rep1, typename _Ratio1, typename _Base1,
+          typename _Rep2, typename _Ratio2, typename _Base2,
+          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
+constexpr auto operator<=(const unit<_Rep1, _Ratio1, _Base1> &lhs,
+                          const unit<_Rep2, _Ratio2, _Base2> &rhs)
+{
+    return !(rhs < lhs);
+}
+
+template <typename _Rep1, typename _Ratio1, typename _Base1,
+          typename _Rep2, typename _Ratio2, typename _Base2,
+          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
+constexpr auto operator>(const unit<_Rep1, _Ratio1, _Base1> &lhs,
+                         const unit<_Rep2, _Ratio2, _Base2> &rhs)
+{
+    return rhs < lhs;
+}
+
+template <typename _Rep1, typename _Ratio1, typename _Base1,
+          typename _Rep2, typename _Ratio2, typename _Base2,
+          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
+constexpr auto operator>=(const unit<_Rep1, _Ratio1, _Base1> &lhs,
+                          const unit<_Rep2, _Ratio2, _Base2> &rhs)
+{
+    return !(lhs < rhs);
+}
+
+template <typename _Rep1, typename _Ratio1, typename _Base1,
+          typename _Rep2, typename _Ratio2, typename _Base2,
+          typename = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
+constexpr auto operator+(const unit<_Rep1, _Ratio1, _Base1> &lhs,
+                         const unit<_Rep2, _Ratio2, _Base2> &rhs)
+{
+    using u1 = unit<_Rep1, _Ratio1, _Base1>;
+    using u2 = unit<_Rep2, _Ratio2, _Base2>;
+    using common_unit = typename std::common_type_t<u1, u2>;
+
+    return common_unit{common_unit{lhs}.count() + common_unit{rhs}.count()};
+}
+
+template <typename _Rep1, typename _Ratio1, typename _Base1,
+          typename _Rep2, typename _Ratio2, typename _Base2,
+          std::enable_if_t<std::is_same<_Base1, _Base2>::value, int> = 0>
+constexpr auto operator-(const unit<_Rep1, _Ratio1, _Base1> &lhs,
+                         const unit<_Rep2, _Ratio2, _Base2> &rhs)
+{
+    using u1 = unit<_Rep1, _Ratio1, _Base1>;
+    using u2 = unit<_Rep2, _Ratio2, _Base2>;
+    using common_unit = typename std::common_type_t<u1, u2>;
+
+    return common_unit{common_unit{lhs}.count() - common_unit{rhs}.count()};
+}
+
+// base units
 template<typename _Rep, typename _Ratio = std::ratio<1>>
 using length = unit<_Rep, _Ratio, detail::_m<1>>;
 
@@ -120,108 +230,3 @@ template<typename _Rep, typename _Ratio = std::ratio<1>>
 using luminous_intensity = unit<_Rep, _Ratio, detail::_cd<1>>;
 } // namespace si
 
-namespace std
-{
-template <typename _Rep1, typename _Ratio1, typename _Base1,
-          typename _Rep2, typename _Ratio2, typename _Base2>
-struct common_type<si::unit<_Rep1, _Ratio1, _Base1>,
-                   si::unit<_Rep2, _Ratio2, _Base2>> {
-private:
-    static constexpr auto gcd_num = std::experimental::gcd(_Ratio1::num, _Ratio2::num);
-    static constexpr auto gcd_den = std::experimental::gcd(_Ratio1::den, _Ratio2::den);
-
-    using common_ratio = std::ratio<gcd_num, (_Ratio1::den / gcd_den) * _Ratio2::den>;
-    using common_rep   = std::common_type_t<_Rep1, _Rep2>;
-    using common_base  = typename std::enable_if_t<std::is_same<_Base1, _Base2>::value, _Base1>;
-public:
-    using type = si::unit<common_rep, common_ratio, common_base>;
-};
-} // namespace std
-
-template <typename _Rep1, typename _Ratio1, typename _Base1,
-          typename _Rep2, typename _Ratio2, typename _Base2,
-          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
-constexpr auto operator==(const si::unit<_Rep1, _Ratio1, _Base1> &lhs,
-                          const si::unit<_Rep2, _Ratio2, _Base2> &rhs)
-{
-    using u1 = si::unit<_Rep1, _Ratio1, _Base1>;
-    using u2 = si::unit<_Rep2, _Ratio2, _Base2>;
-    using common_unit = typename std::common_type_t<u1, u2>;
-
-    return common_unit{lhs}.count() == common_unit{rhs}.count();
-}
-
-template <typename _Rep1, typename _Ratio1, typename _Base1,
-          typename _Rep2, typename _Ratio2, typename _Base2,
-          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
-constexpr auto operator<(const si::unit<_Rep1, _Ratio1, _Base1> &lhs,
-        const si::unit<_Rep2, _Ratio2, _Base2> &rhs)
-{
-    using u1 = si::unit<_Rep1, _Ratio1, _Base1>;
-    using u2 = si::unit<_Rep2, _Ratio2, _Base2>;
-    using common_unit = typename std::common_type_t<u1, u2>;
-
-    return common_unit{lhs}.count() < common_unit{rhs}.count();
-}
-
-template <typename _Rep1, typename _Ratio1, typename _Base1,
-          typename _Rep2, typename _Ratio2, typename _Base2,
-          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
-constexpr auto operator!=(const si::unit<_Rep1, _Ratio1, _Base1> &lhs,
-                          const si::unit<_Rep2, _Ratio2, _Base2> &rhs)
-{
-    return !(lhs == rhs);
-}
-
-template <typename _Rep1, typename _Ratio1, typename _Base1,
-          typename _Rep2, typename _Ratio2, typename _Base2,
-          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
-constexpr auto operator<=(const si::unit<_Rep1, _Ratio1, _Base1> &lhs,
-                          const si::unit<_Rep2, _Ratio2, _Base2> &rhs)
-{
-    return !(rhs < lhs);
-}
-
-template <typename _Rep1, typename _Ratio1, typename _Base1,
-          typename _Rep2, typename _Ratio2, typename _Base2,
-          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
-constexpr auto operator>(const si::unit<_Rep1, _Ratio1, _Base1> &lhs,
-                          const si::unit<_Rep2, _Ratio2, _Base2> &rhs)
-{
-    return rhs < lhs;
-}
-
-template <typename _Rep1, typename _Ratio1, typename _Base1,
-          typename _Rep2, typename _Ratio2, typename _Base2,
-          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
-constexpr auto operator>=(const si::unit<_Rep1, _Ratio1, _Base1> &lhs,
-                          const si::unit<_Rep2, _Ratio2, _Base2> &rhs)
-{
-    return !(lhs < rhs);
-}
-
-template <typename _Rep1, typename _Ratio1, typename _Base1,
-          typename _Rep2, typename _Ratio2, typename _Base2,
-          typename = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
-constexpr auto operator+(const si::unit<_Rep1, _Ratio1, _Base1> &lhs,
-                         const si::unit<_Rep2, _Ratio2, _Base2> &rhs)
-{
-    using u1 = si::unit<_Rep1, _Ratio1, _Base1>;
-    using u2 = si::unit<_Rep2, _Ratio2, _Base2>;
-    using common_unit = typename std::common_type_t<u1, u2>;
-
-    return common_unit{common_unit{lhs}.count() + common_unit{rhs}.count()};
-}
-
-template <typename _Rep1, typename _Ratio1, typename _Base1,
-          typename _Rep2, typename _Ratio2, typename _Base2,
-          std::enable_if_t<std::is_same<_Base1, _Base2>::value, int> = 0>
-constexpr auto operator-(const si::unit<_Rep1, _Ratio1, _Base1> &lhs,
-                         const si::unit<_Rep2, _Ratio2, _Base2> &rhs)
-{
-    using u1 = si::unit<_Rep1, _Ratio1, _Base1>;
-    using u2 = si::unit<_Rep2, _Ratio2, _Base2>;
-    using common_unit = typename std::common_type_t<u1, u2>;
-
-    return common_unit{common_unit{lhs}.count() - common_unit{rhs}.count()};
-}
