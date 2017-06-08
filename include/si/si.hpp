@@ -54,11 +54,6 @@ template<int p = 1> using _K   = base<0, 0, 0, 0, p, 0, 0>;
 template<int p = 1> using _mol = base<0, 0, 0, 0, 0, p, 0>;
 template<int p = 1> using _cd  = base<0, 0, 0, 0, 0, 0, p>;
 
-// derived units                      m kg  s  A  K mol cd
-template<int p = 1> using _Hz  = base< 0, 0,   -p, 0, 0, 0, 0>;
-template<int p = 1> using _N   = base< p, p, -2*p, 0, 0, 0, 0>;
-template<int p = 1> using _Pa  = base<-p, p, -2*p, 0, 0, 0, 0>;
-
 // radian and steradian are dimensionless, unfortunately that means that they cannot be
 // differentiated with the current implementation.
 template<int p = 1> using _rad = base<>;
@@ -300,5 +295,80 @@ using amount = unit<_Rep, _Ratio, detail::_mol<1>>;
 
 template<typename _Rep, typename _Ratio = std::ratio<1>>
 using luminous_intensity = unit<_Rep, _Ratio, detail::_cd<1>>;
-} // namespace si
 
+// derived units
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using area = unit<_Rep, _Ratio, detail::_m<2>>;
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using volume = unit<_Rep, _Ratio, detail::_m<3>>;
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using velocity = decltype(length<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using acceleration = decltype(velocity<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using angle = unit<_Rep, _Ratio, detail::base<>>;
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using solid_angle = unit<_Rep, _Ratio, detail::base<>>;
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using frequency = decltype(1 / time<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using force = unit<_Rep, _Ratio, detail::base<1, 1, -2>>;
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using pressure = decltype(force<_Rep, _Ratio>{} / area<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using energy = decltype(force<_Rep, _Ratio>{} * length<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using power = decltype(energy<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using electric_charge = decltype(time<_Rep, _Ratio>{} * current<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using voltage = decltype(power<_Rep, _Ratio>{} / current<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using capacitance = decltype(electric_charge<_Rep, _Ratio>{} / voltage<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using electric_resistance = decltype(voltage<_Rep, _Ratio>{} / current<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using electrical_conductance = decltype(current<_Rep, _Ratio>{} / voltage<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using magnetic_flux = decltype(voltage<_Rep, _Ratio>{} * time<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using magnetic_flux_density = decltype(magnetic_flux<_Rep, _Ratio>{} / area<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using inductance = decltype(magnetic_flux<_Rep, _Ratio>{} / current<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using luminous_flux = decltype(luminous_intensity<_Rep, _Ratio>{} * solid_angle<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using illuminance = decltype(luminous_flux<_Rep, _Ratio>{} / area<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using radioactivity = unit<_Rep, _Ratio, detail::_s<-1>>;
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using absorbed_dose = decltype(energy<_Rep, _Ratio>{} / mass<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using equivalent_dose = decltype(energy<_Rep, _Ratio>{} / mass<_Rep, _Ratio>{});
+
+template <typename _Rep, typename _Ratio = std::ratio<1>>
+using catalytic_activity = decltype(amount<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
+} // namespace si

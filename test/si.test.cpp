@@ -41,11 +41,6 @@ TEST_CASE("Instanciate derived units", "[detail]")
 {
     using namespace si::detail;
 
-    CHECK((std::is_same<_Hz<>,  base<0,  0, -1>>::value));
-    CHECK((std::is_same<_rad<>, base<0>>::value));
-    CHECK((std::is_same<_sr<>,  base<0>>::value));
-    CHECK((std::is_same<_N<>,   base<1,  1, -2>>::value));
-    CHECK((std::is_same<_Pa<>,  base<-1, 1, -2>>::value));
 }
 
 TEST_CASE("radian and steradian are different types", "[!shouldfail][!hide][detail]")
@@ -305,4 +300,39 @@ TEST_CASE("Convenience types for base SI units", "[unit][detail][constructors]")
         CHECK((std::is_same<si::amount<int,             std::tera>,  si::unit<int, std::tera,  si::detail::_mol<>>>::value));
         CHECK((std::is_same<si::luminous_intensity<int, std::nano>,  si::unit<int, std::nano,  si::detail::_cd<>>>::value));
     }
+}
+
+TEST_CASE("Convenience types for derived SI units", "[unit][detail][constructors]")
+{
+    using namespace si::detail;
+#define X(m, kg, s, A, K, mol, cd) si::unit<int, std::ratio<1>, base< m, kg, s, A, K, mol, cd>>
+    CHECK((std::is_same<si::length<int>, X(1, 0, 0, 0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::area<int>,   X(2, 0, 0, 0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::volume<int>, X(3, 0, 0, 0, 0, 0, 0)>::value));
+
+    CHECK((std::is_same<si::velocity<int>,     X(1, 0, -1, 0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::acceleration<int>, X(1, 0, -2, 0, 0, 0, 0)>::value));
+
+    CHECK((std::is_same<si::angle<int>,                  X( 0,  0,  0,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::solid_angle<int>,            X( 0,  0,  0,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::frequency<int>,              X( 0,  0, -1,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::force<int>,                  X( 1,  1, -2,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::pressure<int>,               X(-1,  1, -2,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::energy<int>,                 X( 2,  1, -2,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::power<int>,                  X( 2,  1, -3,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::electric_charge<int>,        X( 0,  0,  1,  1, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::voltage<int>,                X( 2,  1, -3, -1, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::capacitance<int>,            X(-2, -1,  4,  2, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::electric_resistance<int>,    X( 2,  1, -3, -2, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::electrical_conductance<int>, X(-2, -1,  3,  2, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::magnetic_flux<int>,          X( 2,  1, -2, -1, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::magnetic_flux_density<int>,  X( 0,  1, -2, -1, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::inductance<int>,             X( 2,  1, -2, -2, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::luminous_flux<int>,          X( 0,  0,  0,  0, 0, 0, 1)>::value));
+    CHECK((std::is_same<si::illuminance<int>,            X(-2,  0,  0,  0, 0, 0, 1)>::value));
+    CHECK((std::is_same<si::radioactivity<int>,          X( 0,  0, -1,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::absorbed_dose<int>,          X( 2,  0, -2,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::equivalent_dose<int>,        X( 2,  0, -2,  0, 0, 0, 0)>::value));
+    CHECK((std::is_same<si::catalytic_activity<int>,     X( 0,  0, -1,  0, 0, 1, 0)>::value));
+#undef X
 }
