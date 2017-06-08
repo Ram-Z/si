@@ -232,6 +232,40 @@ TEST_CASE("Unit operations", "[unit][operators]")
     }
 }
 
+TEST_CASE("Unit multiplication", "[unit][operators]")
+{
+    using test_unit1 = si::unit<int, std::ratio<1>, si::detail::base<1>>;
+    using test_unit2 = si::unit<int, std::ratio<1>, si::detail::base<2>>;
+
+    auto result1 = test_unit1{2} * test_unit1{4};
+    CHECK(result1.count() == 8);
+    CHECK((std::is_same<decltype(result1), test_unit2>::value));
+
+    using test_unit01 = si::unit<int, std::ratio<1>, si::detail::base<0, 1>>;
+    using test_unit11 = si::unit<int, std::ratio<1>, si::detail::base<1, 1>>;
+
+    auto result2 = test_unit1{2} * test_unit01{-4};
+    CHECK(result2.count() == -8);
+    CHECK((std::is_same<decltype(result2), test_unit11>::value));
+}
+
+TEST_CASE("Unit division", "[unit][operators]")
+{
+    using test_unit1 = si::unit<double, std::ratio<1>, si::detail::base<1>>;
+    using test_unit0 = si::unit<double, std::ratio<1>, si::detail::base<0>>;
+
+    auto result1 = test_unit1{2} / test_unit1{4};
+    CHECK(result1.count() == Approx(0.5));
+    CHECK((std::is_same<decltype(result1), test_unit0>::value));
+
+    using test_unit01 = si::unit<double, std::ratio<1>, si::detail::base<0, 1>>;
+    using test_unit11 = si::unit<double, std::ratio<1>, si::detail::base<1, -1>>;
+
+    auto result2 = test_unit1{2} / test_unit01{-4};
+    CHECK(result2.count() == Approx(-0.5));
+    CHECK((std::is_same<decltype(result2), test_unit11>::value));
+}
+
 TEST_CASE("Unit conversions", "[unit][unit_cast]")
 {
     SECTION("Convert between different ratios")
