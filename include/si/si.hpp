@@ -274,101 +274,40 @@ constexpr auto operator/(const _Rep2 &lhs,
     return common_unit{lhs / rhs.count()};
 }
 
+#define UNIT_TEMPLATE template<typename _Rep, typename _Ratio = std::ratio<1>>
 // base units
-template<typename _Rep, typename _Ratio = std::ratio<1>>
-using length = unit<_Rep, _Ratio, detail::_m<1>>;
-
-template<typename _Rep, typename _Ratio = std::ratio<1>>
-using mass = unit<_Rep, _Ratio, detail::_kg<1>>;
-
-template<typename _Rep, typename _Ratio = std::ratio<1>>
-using time = unit<_Rep, _Ratio, detail::_s<1>>;
-
-template<typename _Rep, typename _Ratio = std::ratio<1>>
-using current = unit<_Rep, _Ratio, detail::_A<1>>;
-
-template<typename _Rep, typename _Ratio = std::ratio<1>>
-using temperature = unit<_Rep, _Ratio, detail::_K<1>>;
-
-template<typename _Rep, typename _Ratio = std::ratio<1>>
-using amount = unit<_Rep, _Ratio, detail::_mol<1>>;
-
-template<typename _Rep, typename _Ratio = std::ratio<1>>
-using luminous_intensity = unit<_Rep, _Ratio, detail::_cd<1>>;
-
+UNIT_TEMPLATE using length             = unit<_Rep, _Ratio, detail::_m<1>>;
+UNIT_TEMPLATE using mass               = unit<_Rep, _Ratio, detail::_kg<1>>;
+UNIT_TEMPLATE using time               = unit<_Rep, _Ratio, detail::_s<1>>;
+UNIT_TEMPLATE using current            = unit<_Rep, _Ratio, detail::_A<1>>;
+UNIT_TEMPLATE using temperature        = unit<_Rep, _Ratio, detail::_K<1>>;
+UNIT_TEMPLATE using amount             = unit<_Rep, _Ratio, detail::_mol<1>>;
+UNIT_TEMPLATE using luminous_intensity = unit<_Rep, _Ratio, detail::_cd<1>>;
 // derived units
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using area = unit<_Rep, _Ratio, detail::_m<2>>;
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using volume = unit<_Rep, _Ratio, detail::_m<3>>;
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using velocity = decltype(length<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using acceleration = decltype(velocity<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using angle = unit<_Rep, _Ratio, detail::base<>>;
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using solid_angle = unit<_Rep, _Ratio, detail::base<>>;
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using frequency = decltype(1 / time<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using force = unit<_Rep, _Ratio, detail::base<1, 1, -2>>;
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using pressure = decltype(force<_Rep, _Ratio>{} / area<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using energy = decltype(force<_Rep, _Ratio>{} * length<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using power = decltype(energy<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using electric_charge = decltype(time<_Rep, _Ratio>{} * current<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using voltage = decltype(power<_Rep, _Ratio>{} / current<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using capacitance = decltype(electric_charge<_Rep, _Ratio>{} / voltage<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using electric_resistance = decltype(voltage<_Rep, _Ratio>{} / current<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using electrical_conductance = decltype(current<_Rep, _Ratio>{} / voltage<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using magnetic_flux = decltype(voltage<_Rep, _Ratio>{} * time<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using magnetic_flux_density = decltype(magnetic_flux<_Rep, _Ratio>{} / area<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using inductance = decltype(magnetic_flux<_Rep, _Ratio>{} / current<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using luminous_flux = decltype(luminous_intensity<_Rep, _Ratio>{} * solid_angle<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using illuminance = decltype(luminous_flux<_Rep, _Ratio>{} / area<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using radioactivity = unit<_Rep, _Ratio, detail::_s<-1>>;
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using absorbed_dose = decltype(energy<_Rep, _Ratio>{} / mass<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using equivalent_dose = decltype(energy<_Rep, _Ratio>{} / mass<_Rep, _Ratio>{});
-
-template <typename _Rep, typename _Ratio = std::ratio<1>>
-using catalytic_activity = decltype(amount<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
+UNIT_TEMPLATE using area                   = unit<_Rep, _Ratio, detail::_m<2>>;
+UNIT_TEMPLATE using volume                 = unit<_Rep, _Ratio, detail::_m<3>>;
+UNIT_TEMPLATE using velocity               = decltype(length<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
+UNIT_TEMPLATE using acceleration           = decltype(velocity<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
+UNIT_TEMPLATE using angle                  = unit<_Rep, _Ratio, detail::base<>>;
+UNIT_TEMPLATE using solid_angle            = unit<_Rep, _Ratio, detail::base<>>;
+UNIT_TEMPLATE using frequency              = decltype(1 / time<_Rep, _Ratio>{});
+UNIT_TEMPLATE using force                  = unit<_Rep, _Ratio, detail::base<1, 1, -2>>;
+UNIT_TEMPLATE using pressure               = decltype(force<_Rep, _Ratio>{} / area<_Rep, _Ratio>{});
+UNIT_TEMPLATE using energy                 = decltype(force<_Rep, _Ratio>{} * length<_Rep, _Ratio>{});
+UNIT_TEMPLATE using power                  = decltype(energy<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
+UNIT_TEMPLATE using electric_charge        = decltype(time<_Rep, _Ratio>{} * current<_Rep, _Ratio>{});
+UNIT_TEMPLATE using voltage                = decltype(power<_Rep, _Ratio>{} / current<_Rep, _Ratio>{});
+UNIT_TEMPLATE using capacitance            = decltype(electric_charge<_Rep, _Ratio>{} / voltage<_Rep, _Ratio>{});
+UNIT_TEMPLATE using electric_resistance    = decltype(voltage<_Rep, _Ratio>{} / current<_Rep, _Ratio>{});
+UNIT_TEMPLATE using electrical_conductance = decltype(current<_Rep, _Ratio>{} / voltage<_Rep, _Ratio>{});
+UNIT_TEMPLATE using magnetic_flux          = decltype(voltage<_Rep, _Ratio>{} * time<_Rep, _Ratio>{});
+UNIT_TEMPLATE using magnetic_flux_density  = decltype(magnetic_flux<_Rep, _Ratio>{} / area<_Rep, _Ratio>{});
+UNIT_TEMPLATE using inductance             = decltype(magnetic_flux<_Rep, _Ratio>{} / current<_Rep, _Ratio>{});
+UNIT_TEMPLATE using luminous_flux          = decltype(luminous_intensity<_Rep, _Ratio>{} * solid_angle<_Rep, _Ratio>{});
+UNIT_TEMPLATE using illuminance            = decltype(luminous_flux<_Rep, _Ratio>{} / area<_Rep, _Ratio>{});
+UNIT_TEMPLATE using radioactivity          = unit<_Rep, _Ratio, detail::_s<-1>>;
+UNIT_TEMPLATE using absorbed_dose          = decltype(energy<_Rep, _Ratio>{} / mass<_Rep, _Ratio>{});
+UNIT_TEMPLATE using equivalent_dose        = decltype(energy<_Rep, _Ratio>{} / mass<_Rep, _Ratio>{});
+UNIT_TEMPLATE using catalytic_activity     = decltype(amount<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
+#undef UNIT_TEMPLATE
 } // namespace si
