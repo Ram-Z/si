@@ -14,16 +14,24 @@ struct unit;
 
 namespace std
 {
+template <intmax_t _Num1, intmax_t _Den1,
+          intmax_t _Num2, intmax_t _Den2>
+struct common_type<std::ratio<_Num1, _Den1>, std::ratio<_Num2, _Den2>> {
+private:
+    static constexpr auto gcd_num = std::experimental::gcd(_Num1, _Num2);
+    static constexpr auto gcd_den = std::experimental::gcd(_Den1, _Den2);
+
+public:
+    using type = std::ratio<gcd_num, (_Den1 / gcd_den) * _Den2>;
+};
+
 template <typename _Rep1, typename _Ratio1, typename _Base1,
           typename _Rep2, typename _Ratio2, typename _Base2>
 struct common_type<si::unit<_Rep1, _Ratio1, _Base1>,
                    si::unit<_Rep2, _Ratio2, _Base2>> {
 private:
-    static constexpr auto gcd_num = std::experimental::gcd(_Ratio1::num, _Ratio2::num);
-    static constexpr auto gcd_den = std::experimental::gcd(_Ratio1::den, _Ratio2::den);
-
-    using common_ratio = std::ratio<gcd_num, (_Ratio1::den / gcd_den) * _Ratio2::den>;
     using common_rep   = std::common_type_t<_Rep1, _Rep2>;
+    using common_ratio = std::common_type_t<_Ratio1, _Ratio2>;
     using common_base  = typename std::enable_if_t<std::is_same<_Base1, _Base2>::value, _Base1>;
 public:
     using type = si::unit<common_rep, common_ratio, common_base>;
