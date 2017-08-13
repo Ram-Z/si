@@ -311,4 +311,36 @@ UNIT_TEMPLATE using absorbed_dose          = decltype(energy<_Rep, _Ratio>{} / m
 UNIT_TEMPLATE using equivalent_dose        = decltype(energy<_Rep, _Ratio>{} / mass<_Rep, _Ratio>{});
 UNIT_TEMPLATE using catalytic_activity     = decltype(amount<_Rep, _Ratio>{} / time<_Rep, _Ratio>{});
 #undef UNIT_TEMPLATE
+
+#define PREFIXES(unit, dim)         \
+    PREFIXED_UNIT(atto,  unit, dim) \
+    PREFIXED_UNIT(atto,  unit, dim) \
+    PREFIXED_UNIT(femto, unit, dim) \
+    PREFIXED_UNIT(pico,  unit, dim) \
+    PREFIXED_UNIT(nano,  unit, dim) \
+    PREFIXED_UNIT(micro, unit, dim) \
+    PREFIXED_UNIT(milli, unit, dim) \
+    PREFIXED_UNIT(centi, unit, dim) \
+    PREFIXED_UNIT(deci,  unit, dim) \
+    using unit = dim<int>;          \
+    PREFIXED_UNIT(deca,  unit, dim) \
+    PREFIXED_UNIT(hecto, unit, dim) \
+    PREFIXED_UNIT(kilo,  unit, dim) \
+    PREFIXED_UNIT(mega,  unit, dim) \
+    PREFIXED_UNIT(giga,  unit, dim) \
+    PREFIXED_UNIT(tera,  unit, dim) \
+    PREFIXED_UNIT(peta,  unit, dim) \
+    PREFIXED_UNIT(exa,   unit, dim)
+
+#define PREFIXED_UNIT(prefix, unit, dim) using prefix ## unit = dim<int, std::prefix>;
+
+PREFIXES(meter, length)
+PREFIXES(gram, mass)
+PREFIXES(second, time)
+PREFIXES(ampere, current)
+PREFIXES(kelvin, temperature)
+PREFIXES(mole, amount)
+PREFIXES(candela, luminous_intensity)
+#undef PREFIXES
+#undef PREFIXED_UNIT
 } // namespace si
