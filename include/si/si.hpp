@@ -34,10 +34,10 @@ namespace si
 {
 namespace detail
 {
-template <int _m = 0, int _kg = 0, int _s = 0, int _A = 0, int _K = 0, int _mol = 0, int _cd = 0>
+template <int _m = 0, int _g = 0, int _s = 0, int _A = 0, int _K = 0, int _mol = 0, int _cd = 0>
 struct base {
     constexpr static int m   = _m;
-    constexpr static int kg  = _kg;
+    constexpr static int g   = _g;
     constexpr static int s   = _s;
     constexpr static int A   = _A;
     constexpr static int K   = _K;
@@ -45,9 +45,9 @@ struct base {
     constexpr static int cd  = _cd;
 };
 
-// base units                         m kg  s  A  K mol cd
+// base units                         m  g  s  A  K mol cd
 template<int p = 1> using _m   = base<p, 0, 0, 0, 0, 0, 0>;
-template<int p = 1> using _kg  = base<0, p, 0, 0, 0, 0, 0>;
+template<int p = 1> using _g   = base<0, p, 0, 0, 0, 0, 0>;
 template<int p = 1> using _s   = base<0, 0, p, 0, 0, 0, 0>;
 template<int p = 1> using _A   = base<0, 0, 0, p, 0, 0, 0>;
 template<int p = 1> using _K   = base<0, 0, 0, 0, p, 0, 0>;
@@ -61,7 +61,7 @@ template<int p = 1> using _sr  = base<>;
 
 template <typename Lhs, typename Rhs>
 using base_multiply = base<Lhs::m + Rhs::m,
-                           Lhs::kg + Rhs::kg,
+                           Lhs::g + Rhs::g,
                            Lhs::s + Rhs::s,
                            Lhs::A + Rhs::A,
                            Lhs::K + Rhs::K,
@@ -70,7 +70,7 @@ using base_multiply = base<Lhs::m + Rhs::m,
 
 template <typename Lhs, typename Rhs>
 using base_divide = base<Lhs::m - Rhs::m,
-                         Lhs::kg - Rhs::kg,
+                         Lhs::g - Rhs::g,
                          Lhs::s - Rhs::s,
                          Lhs::A - Rhs::A,
                          Lhs::K - Rhs::K,
@@ -79,7 +79,7 @@ using base_divide = base<Lhs::m - Rhs::m,
 
 template <typename Lhs>
 using base_inverse = base<-Lhs::m,
-                          -Lhs::kg,
+                          -Lhs::g,
                           -Lhs::s,
                           -Lhs::A,
                           -Lhs::K,
@@ -275,9 +275,10 @@ constexpr auto operator/(const _Rep2 &lhs,
 }
 
 #define UNIT_TEMPLATE template<typename _Rep, typename _Ratio = std::ratio<1>>
+//TODO default mass should be kg instead of g
+UNIT_TEMPLATE using mass               = unit<_Rep, _Ratio, detail::_g<1>>;
 // base units
 UNIT_TEMPLATE using length             = unit<_Rep, _Ratio, detail::_m<1>>;
-UNIT_TEMPLATE using mass               = unit<_Rep, _Ratio, detail::_kg<1>>;
 UNIT_TEMPLATE using time               = unit<_Rep, _Ratio, detail::_s<1>>;
 UNIT_TEMPLATE using current            = unit<_Rep, _Ratio, detail::_A<1>>;
 UNIT_TEMPLATE using temperature        = unit<_Rep, _Ratio, detail::_K<1>>;

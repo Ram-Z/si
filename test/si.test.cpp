@@ -12,7 +12,7 @@ TEST_CASE("Base instantiations", "[detail]")
 {
     using namespace si::detail;
     CHECK((std::is_same<base<1, 0, 0, 0, 0, 0, 0>, _m<>>::value));
-    CHECK((std::is_same<base<0, 1, 0, 0, 0, 0, 0>, _kg<>>::value));
+    CHECK((std::is_same<base<0, 1, 0, 0, 0, 0, 0>, _g<>>::value));
     CHECK((std::is_same<base<0, 0, 1, 0, 0, 0, 0>, _s<>>::value));
     CHECK((std::is_same<base<0, 0, 0, 1, 0, 0, 0>, _A<>>::value));
     CHECK((std::is_same<base<0, 0, 0, 0, 1, 0, 0>, _K<>>::value));
@@ -24,16 +24,16 @@ TEST_CASE("Base operations", "[detail]")
 {
     using namespace si::detail;
     SECTION("Multiplying") {
-        CHECK((std::is_same<base_multiply<_m<1>,  _m<2>>,  base<3>>::value));
-        CHECK((std::is_same<base_multiply<_m<-3>, _m<2>>,  base<-1>>::value));
-        CHECK((std::is_same<base_multiply<_kg<1>, _m<2>>,  base<2, 1>>::value));
-        CHECK((std::is_same<base_multiply<_m<2>,  _kg<1>>, base<2, 1>>::value));
+        CHECK((std::is_same<base_multiply<_m<1>,  _m<2>>, base<3>>::value));
+        CHECK((std::is_same<base_multiply<_m<-3>, _m<2>>, base<-1>>::value));
+        CHECK((std::is_same<base_multiply<_g<1>,  _m<2>>, base<2, 1>>::value));
+        CHECK((std::is_same<base_multiply<_m<2>,  _g<1>>, base<2, 1>>::value));
     }
     SECTION("Divide") {
-        CHECK((std::is_same<base_divide<_m<3>,    _m<2>>,  base<1>>::value));
-        CHECK((std::is_same<base_divide<_m<-3>,   _m<2>>,  base<-5>>::value));
-        CHECK((std::is_same<base_divide<_kg<1>,   _m<2>>,  base<-2, 1>>::value));
-        CHECK((std::is_same<base_divide<_m<2>,    _kg<1>>, base<2, -1>>::value));
+        CHECK((std::is_same<base_divide<_m<3>,  _m<2>>, base<1>>::value));
+        CHECK((std::is_same<base_divide<_m<-3>, _m<2>>, base<-5>>::value));
+        CHECK((std::is_same<base_divide<_g<1>,  _m<2>>, base<-2, 1>>::value));
+        CHECK((std::is_same<base_divide<_m<2>,  _g<1>>, base<2, -1>>::value));
     }
 }
 
@@ -283,7 +283,7 @@ TEST_CASE("Convenience types for base SI units", "[unit][detail][constructors]")
     SECTION("Default ratios")
     {
         CHECK((std::is_same<si::length<int>,             si::unit<int, std::ratio<1>, si::detail::_m<>>>::value));
-        CHECK((std::is_same<si::mass<int>,               si::unit<int, std::ratio<1>, si::detail::_kg<>>>::value));
+        CHECK((std::is_same<si::mass<int>,               si::unit<int, std::ratio<1>, si::detail::_g<>>>::value));
         CHECK((std::is_same<si::time<int>,               si::unit<int, std::ratio<1>, si::detail::_s<>>>::value));
         CHECK((std::is_same<si::current<int>,            si::unit<int, std::ratio<1>, si::detail::_A<>>>::value));
         CHECK((std::is_same<si::temperature<int>,        si::unit<int, std::ratio<1>, si::detail::_K<>>>::value));
@@ -293,7 +293,7 @@ TEST_CASE("Convenience types for base SI units", "[unit][detail][constructors]")
     SECTION("Other ratios")
     {
         CHECK((std::is_same<si::length<int,             std::milli>, si::unit<int, std::milli, si::detail::_m<>>>::value));
-        CHECK((std::is_same<si::mass<int,               std::deca>,  si::unit<int, std::deca,  si::detail::_kg<>>>::value));
+        CHECK((std::is_same<si::mass<int,               std::deca>,  si::unit<int, std::deca,  si::detail::_g<>>>::value));
         CHECK((std::is_same<si::time<int,               std::exa>,   si::unit<int, std::exa,   si::detail::_s<>>>::value));
         CHECK((std::is_same<si::current<int,            std::atto>,  si::unit<int, std::atto,  si::detail::_A<>>>::value));
         CHECK((std::is_same<si::temperature<int,        std::hecto>, si::unit<int, std::hecto, si::detail::_K<>>>::value));
@@ -305,7 +305,7 @@ TEST_CASE("Convenience types for base SI units", "[unit][detail][constructors]")
 TEST_CASE("Convenience types for derived SI units", "[unit][detail][constructors]")
 {
     using namespace si::detail;
-#define X(m, kg, s, A, K, mol, cd) si::unit<int, std::ratio<1>, base< m, kg, s, A, K, mol, cd>>
+#define X(m, g, s, A, K, mol, cd) si::unit<int, std::ratio<1>, base< m, g, s, A, K, mol, cd>>
     CHECK((std::is_same<si::length<int>, X(1, 0, 0, 0, 0, 0, 0)>::value));
     CHECK((std::is_same<si::area<int>,   X(2, 0, 0, 0, 0, 0, 0)>::value));
     CHECK((std::is_same<si::volume<int>, X(3, 0, 0, 0, 0, 0, 0)>::value));
