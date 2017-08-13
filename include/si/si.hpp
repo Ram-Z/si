@@ -281,9 +281,9 @@ constexpr auto operator/(const _Rep2 &lhs,
 }
 
 #define UNIT_TEMPLATE template<typename _Rep, typename _Ratio = std::ratio<1>>
-//TODO default mass should be kg instead of g
-UNIT_TEMPLATE using mass               = unit<_Rep, _Ratio, detail::_g<1>>;
-// base units
+// base units (base unit for mass is kg, not gram)
+template<typename _Rep, typename _Ratio = std::ratio<1000, 1>>
+using mass = unit<_Rep, _Ratio, detail::_g<1>>;
 UNIT_TEMPLATE using length             = unit<_Rep, _Ratio, detail::_m<1>>;
 UNIT_TEMPLATE using time               = unit<_Rep, _Ratio, detail::_s<1>>;
 UNIT_TEMPLATE using current            = unit<_Rep, _Ratio, detail::_A<1>>;
@@ -328,7 +328,7 @@ UNIT_TEMPLATE using catalytic_activity     = decltype(amount<_Rep, _Ratio>{} / t
     PREFIXED_UNIT(milli, unit, dim) \
     PREFIXED_UNIT(centi, unit, dim) \
     PREFIXED_UNIT(deci,  unit, dim) \
-    using unit = dim<int>;          \
+    using unit = dim<int, std::ratio<1>>; \
     PREFIXED_UNIT(deca,  unit, dim) \
     PREFIXED_UNIT(hecto, unit, dim) \
     PREFIXED_UNIT(kilo,  unit, dim) \

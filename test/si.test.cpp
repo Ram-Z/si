@@ -321,7 +321,7 @@ TEST_CASE("Convenience types for base SI units", "[unit][detail][constructors]")
     SECTION("Default ratios")
     {
         CHECK((std::is_same<si::length<int>,             si::unit<int, std::ratio<1>, si::detail::_m<>>>::value));
-        CHECK((std::is_same<si::mass<int>,               si::unit<int, std::ratio<1>, si::detail::_g<>>>::value));
+        CHECK((std::is_same<si::mass<int>,               si::unit<int, std::ratio<1000>, si::detail::_g<>>>::value));
         CHECK((std::is_same<si::time<int>,               si::unit<int, std::ratio<1>, si::detail::_s<>>>::value));
         CHECK((std::is_same<si::current<int>,            si::unit<int, std::ratio<1>, si::detail::_A<>>>::value));
         CHECK((std::is_same<si::temperature<int>,        si::unit<int, std::ratio<1>, si::detail::_K<>>>::value));
