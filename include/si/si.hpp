@@ -224,12 +224,11 @@ template <typename _Rep1, typename _Ratio1, typename _Base1,
 constexpr auto operator*(const unit<_Rep1, _Ratio1, _Base1> &lhs,
                          const unit<_Rep2, _Ratio2, _Base2> &rhs)
 {
-    static_assert(std::is_same<_Ratio1, _Ratio2>::value, "Ratios need to be the same for now");
-
     using common_base = detail::base_multiply<_Base1, _Base2>;
+    using common_ratio = typename std::common_type_t<_Ratio1, _Ratio2>;
     using common_rep = typename std::common_type_t<_Rep1, _Rep2>;
 
-    return unit<common_rep, _Ratio1, common_base>{lhs.count() * rhs.count()};
+    return unit<common_rep, common_ratio, common_base>{lhs.count() * rhs.count()};
 }
 
 template <typename _Rep1, typename _Ratio1, typename _Base1,
@@ -254,12 +253,11 @@ template <typename _Rep1, typename _Ratio1, typename _Base1,
 constexpr auto operator/(const unit<_Rep1, _Ratio1, _Base1> &lhs,
                          const unit<_Rep2, _Ratio2, _Base2> &rhs)
 {
-    static_assert(std::is_same<_Ratio1, _Ratio2>::value, "Ratios need to be the same for now");
-
     using common_base = detail::base_divide<_Base1, _Base2>;
+    using common_ratio = typename std::common_type_t<_Ratio1, _Ratio2>;
     using common_rep = typename std::common_type_t<_Rep1, _Rep2>;
 
-    return unit<common_rep, _Ratio1, common_base>{lhs.count() / rhs.count()};
+    return unit<common_rep, common_ratio, common_base>{lhs.count() / rhs.count()};
 }
 
 template <typename _Rep1, typename _Ratio1, typename _Base1,

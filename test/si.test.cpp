@@ -244,6 +244,25 @@ TEST_CASE("Unit multiplication", "[unit][operators]")
     CHECK((std::is_same<decltype(result2), test_unit11>::value));
 }
 
+TEST_CASE("Unit multiplication with different ratios", "[unit][operators]")
+{
+    using test_unit1 = si::unit<int, std::ratio<1>, si::detail::base<1>>;
+    using test_unit2 = si::unit<int, std::ratio<1, 1000>, si::detail::base<2>>;
+    using test_unit3 = si::unit<int, std::ratio<1, 1000>, si::detail::base<3>>;
+
+    auto result1 = test_unit1{2} * test_unit2{4};
+    CHECK(result1 == test_unit3{8});
+    CHECK((std::is_same<decltype(result1), test_unit3>::value));
+
+    using test_unit01 = si::unit<int, std::ratio<1>, si::detail::base<0, 1>>;
+    using test_unit11 = si::unit<int, std::ratio<1000>, si::detail::base<1, 1>>;
+    using test_unit12 = si::unit<int, std::ratio<1>, si::detail::base<1, 2>>;
+
+    auto result2 = test_unit11{2} * test_unit01{-4};
+    CHECK(result2 == test_unit12{-8});
+    CHECK((std::is_same<decltype(result2), test_unit12>::value));
+}
+
 TEST_CASE("Unit division", "[unit][operators]")
 {
     using test_unit1 = si::unit<double, std::ratio<1>, si::detail::base<1>>;
@@ -259,6 +278,25 @@ TEST_CASE("Unit division", "[unit][operators]")
     auto result2 = test_unit1{2} / test_unit01{-4};
     CHECK(result2.count() == Approx(-0.5));
     CHECK((std::is_same<decltype(result2), test_unit11>::value));
+}
+
+TEST_CASE("Unit division with different ratios", "[unit][operators]")
+{
+    using test_unit1 = si::unit<int, std::ratio<1, 1000>, si::detail::base<1>>;
+    using test_unit2 = si::unit<int, std::ratio<1>, si::detail::base<2>>;
+    using test_unit3 = si::unit<int, std::ratio<1, 1000>, si::detail::base<3>>;
+
+    auto result1 = test_unit3{4} / test_unit2{2};
+    CHECK(result1 == test_unit1{2});
+    CHECK((std::is_same<decltype(result1), test_unit1>::value));
+
+    using test_unit01 = si::unit<int, std::ratio<1>, si::detail::base<0, 1>>;
+    using test_unit11 = si::unit<int, std::ratio<1000>, si::detail::base<1, 1>>;
+    using test_unit10 = si::unit<int, std::ratio<1>, si::detail::base<1, 0>>;
+
+    auto result2 = test_unit11{4} / test_unit01{-2};
+    CHECK(result2 == test_unit10{-2});
+    CHECK((std::is_same<decltype(result2), test_unit10>::value));
 }
 
 TEST_CASE("Unit conversions", "[unit][unit_cast]")
