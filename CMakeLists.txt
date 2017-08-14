@@ -33,6 +33,9 @@ if(BUILD_TESTING)
     PRIVATE Catch::Catch
     PRIVATE SI::SI
   )
+
+  include(ClangTools)
+  clang_tidy(si_test)
 endif()
 
 install(DIRECTORY include/ DESTINATION include)
