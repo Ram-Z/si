@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <experimental/numeric>
 #include <numeric>
 #include <ratio>
@@ -129,7 +130,38 @@ struct unit
 
 private:
     rep _count = 0;
-}; // class unit
+};
+
+// partial specialisation for "time"
+// this allows us to add conversion operators to std::chrono
+template<typename _Rep, typename _Ratio>
+struct unit<_Rep, _Ratio, detail::_s<1>>
+{
+    using rep   = _Rep;
+    using ratio = _Ratio;
+    using base  = detail::_s<1>;
+
+    constexpr unit() = default;
+    explicit constexpr unit(rep count)
+        : _count(count) { }
+
+    template<typename _Rep2, typename _Ratio2, typename _Base2>
+    constexpr unit(const unit<_Rep2, _Ratio2, _Base2> &other)
+        : _count(unit_cast<unit>(other).count()) { }
+
+    constexpr rep count() const { return _count; }
+
+    template<typename _Rep2, typename _Ratio2>
+    operator std::chrono::duration<_Rep2, _Ratio2>() {
+        using common_rep   = std::common_type_t<rep, _Rep2>;
+        using common_ratio = std::common_type_t<ratio, _Ratio2>;
+        using common_unit = unit<common_rep, common_ratio, base>;
+        return std::chrono::duration<common_rep, common_ratio>{ common_unit(*this).count() };
+    }
+
+private:
+    rep _count = 0;
+};
 
 template <typename _Rep1, typename _Ratio1, typename _Base1,
           typename _Rep2, typename _Ratio2, typename _Base2,

@@ -316,6 +316,19 @@ TEST_CASE("Unit conversions", "[unit][unit_cast]")
     }
 }
 
+TEST_CASE("Time types can be converted to chrono::duration", "[unit][conversion]")
+{
+    namespace chrono = std::chrono;
+
+    si::second ss{42};
+    chrono::seconds cs{ss};
+
+    CHECK(cs.count() == ss.count());
+
+    chrono::milliseconds us = si::time<int, std::kilo>{42};
+    CHECK((us == chrono::duration<long, std::milli>{42000000}));
+}
+
 TEST_CASE("Convenience types for base SI units", "[unit][detail][constructors]")
 {
     SECTION("Default ratios")
