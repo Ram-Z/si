@@ -8,6 +8,16 @@
 template<typename _Rep = int, typename _Ratio = std::ratio<1>, typename _Base = si::detail::base<>>
 using test_unit = si::unit<_Rep, _Ratio, _Base>;
 
+TEST_CASE("Common Type", "[common_type]")
+{
+    using t1 = std::common_type_t<std::ratio<1, 5>, std::ratio<1, 10>>;
+    CHECK((std::is_same<t1, std::ratio<1, 10>>::value));
+    using t2 = std::common_type_t<std::ratio<10, 3>, std::ratio<1, 10>>;
+    CHECK((std::is_same<t2, std::ratio<1, 30>>::value));
+    using t3 = std::common_type_t<std::ratio<2, 42>, std::ratio<42, 10>>;
+    CHECK((std::is_same<t3, std::ratio<2, 210>>::value));
+}
+
 TEST_CASE("Base instantiations", "[detail]")
 {
     using namespace si::detail;
