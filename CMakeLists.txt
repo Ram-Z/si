@@ -22,7 +22,7 @@ target_include_directories(si
 
 if(BUILD_TESTING)
   include(Catch)
-  get_catch(VERSION 1.9.3)
+  get_catch(VERSION 1.9.7)
 
   add_test_executable(si_test
     test/tests.cpp
