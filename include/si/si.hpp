@@ -227,7 +227,7 @@ constexpr auto operator>=(const unit<_Rep1, _Ratio1, _Base1> &lhs,
 
 template <typename _Rep1, typename _Ratio1, typename _Base1,
           typename _Rep2, typename _Ratio2, typename _Base2,
-          typename = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
+          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
 constexpr auto operator+(const unit<_Rep1, _Ratio1, _Base1> &lhs,
                          const unit<_Rep2, _Ratio2, _Base2> &rhs)
 {
@@ -240,7 +240,7 @@ constexpr auto operator+(const unit<_Rep1, _Ratio1, _Base1> &lhs,
 
 template <typename _Rep1, typename _Ratio1, typename _Base1,
           typename _Rep2, typename _Ratio2, typename _Base2,
-          std::enable_if_t<std::is_same<_Base1, _Base2>::value, int> = 0>
+          class = std::enable_if_t<std::is_same<_Base1, _Base2>::value>>
 constexpr auto operator-(const unit<_Rep1, _Ratio1, _Base1> &lhs,
                          const unit<_Rep2, _Ratio2, _Base2> &rhs)
 {
