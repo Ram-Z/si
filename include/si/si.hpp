@@ -94,6 +94,15 @@ using base_inverse = base<-Lhs::m,
                           -Lhs::K,
                           -Lhs::mol,
                           -Lhs::cd>;
+
+// why is this not in the stdandard?
+template <typename T, typename U>
+struct implication
+    : std::disjunction<std::negation<T>, U>
+{};
+
+template <typename T, typename U>
+inline constexpr bool implication_v = implication<T, U>::value;
 } // namespace detail
 
 template<typename _ToUnit, typename _Rep, typename _Ratio, typename _Base>
@@ -122,7 +131,9 @@ struct unit
     explicit constexpr unit(rep count)
         : _count(count) { }
 
-    template<typename _Rep2, typename _Ratio2, typename _Base2>
+    template<typename _Rep2, typename _Ratio2, typename _Base2,
+             class = std::enable_if_t<detail::implication_v<std::is_floating_point<_Rep2>,
+                                                            std::is_floating_point<rep>>>>
     constexpr unit(const unit<_Rep2, _Ratio2, _Base2> &other)
         : _count(unit_cast<unit>(other).count()) { }
 

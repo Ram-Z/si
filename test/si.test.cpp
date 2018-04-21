@@ -59,6 +59,26 @@ TEST_CASE("radian and steradian are different types", "[!shouldfail][!hide][deta
     CHECK(!std::is_same<_rad<>, _sr<>>::value);
 }
 
+TEST_CASE("implication", "[detail]")
+{
+    CHECK(si::detail::implication_v<std::is_floating_point<float>,  std::is_floating_point<float>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<float>,  std::is_floating_point<double>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<double>, std::is_floating_point<float>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<double>, std::is_floating_point<double>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<int>,    std::is_floating_point<float>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<int>,    std::is_floating_point<double>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<long>,   std::is_floating_point<float>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<long>,   std::is_floating_point<double>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<int>,    std::is_floating_point<int>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<int>,    std::is_floating_point<long>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<long>,   std::is_floating_point<int>>);
+    CHECK(si::detail::implication_v<std::is_floating_point<long>,   std::is_floating_point<long>>);
+    CHECK_FALSE(si::detail::implication_v<std::is_floating_point<float>,  std::is_floating_point<int>>);
+    CHECK_FALSE(si::detail::implication_v<std::is_floating_point<double>, std::is_floating_point<int>>);
+    CHECK_FALSE(si::detail::implication_v<std::is_floating_point<float>,  std::is_floating_point<long>>);
+    CHECK_FALSE(si::detail::implication_v<std::is_floating_point<double>, std::is_floating_point<long>>);
+}
+
 TEST_CASE("Unit Constructors", "[unit][constructors]")
 {
     SECTION("Default constructors initialize to 0")
@@ -87,6 +107,26 @@ TEST_CASE("Unit Constructors", "[unit][constructors]")
         for (auto v : values) {
             CHECK(test_unit<float>{v}.count() == v);
         }
+    }
+
+    SECTION("Implicit int -> float construction is allowed")
+    {
+        CHECK(std::is_constructible_v<test_unit<float>,       test_unit<int>>);
+        CHECK(std::is_constructible_v<test_unit<float>,       test_unit<long>>);
+        CHECK(std::is_constructible_v<test_unit<double>,      test_unit<int>>);
+        CHECK(std::is_constructible_v<test_unit<double>,      test_unit<long>>);
+        CHECK(std::is_constructible_v<test_unit<long double>, test_unit<int>>);
+        CHECK(std::is_constructible_v<test_unit<long double>, test_unit<long>>);
+    }
+
+    SECTION("Implicit float -> int construction is forbidden")
+    {
+        CHECK_FALSE(std::is_constructible_v<test_unit<int>, test_unit<float>>);
+        CHECK_FALSE(std::is_constructible_v<test_unit<int>, test_unit<double>>);
+        CHECK_FALSE(std::is_constructible_v<test_unit<int>, test_unit<long double>>);
+        CHECK_FALSE(std::is_constructible_v<test_unit<long>, test_unit<float>>);
+        CHECK_FALSE(std::is_constructible_v<test_unit<long>, test_unit<double>>);
+        CHECK_FALSE(std::is_constructible_v<test_unit<long>, test_unit<long double>>);
     }
 }
 
